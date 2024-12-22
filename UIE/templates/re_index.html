@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关系抽取系统 / Relation Extraction System</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lora:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        header {
+            background-color: #002b5c;
+            color: white;
+            display: flex;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            padding: 15px 20px;
+            box-sizing: border-box;
+        }
+
+        header img {
+            height: 40px;
+            width: 160px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        header .sub-title {
+            font-size: 16px;
+            margin-top: 5px;
+            color: #cbd6e2;
+            font-family: 'Lora', serif;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #cbd6e2;
+            border-radius: 4px;
+            resize: vertical;
+            font-size: 14px;
+            background-color: white;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .analyze-btn {
+            background-color: #4a90e2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .analyze-btn:hover {
+            background-color: #357abd;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #cbd6e2;
+            border-radius: 4px;
+            background-color: #e6f7ff;
+        }
+
+        .result-header {
+            color: #002b5c;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        .text-input {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            border-left: 4px solid #4a90e2;
+        }
+
+        .analysis-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 15px 0;
+            border-left: 4px solid #4a90e2;
+        }
+
+        .analysis-content {
+            background-color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            color: #002b5c;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .entity-item {
+            margin: 8px 0;
+            padding: 8px;
+            background-color: #f0f8ff;
+            border-radius: 4px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .entity-label {
+            color: #4a90e2;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .footer {
+            background-color: #002b5c;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+
+        .footer-text {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #4a90e2;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .entity-types-reference {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border-left: 4px solid #4a90e2;
+        }
+
+        .entity-category {
+            margin: 15px 0;
+        }
+
+        .category-title {
+            color: #002b5c;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .entity-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .entity-tag {
+            background-color: #e6f7ff;
+            color: #4a90e2;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .entity-tag:hover {
+            background-color: #4a90e2;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+    <div>
+        <h1>关系抽取系统</h1>
+        <p class="sub-title">Relation Extraction System</p>
+    </div>
+</header>
+
+<div class="container">
+    <form method="POST">
+        <textarea name="text" placeholder="请输入要分析的文本...">{{ text }}</textarea>
+        <button type="submit" class="analyze-btn">分析文本</button>
+    </form>
+
+    {% if result %}
+    <div class="result">
+        <div class="result-header">分析结果</div>
+
+        <div class="text-input">
+            <div class="section-title">输入文本：</div>
+            {{ result.text }}
+        </div>
+
+        <div class="analysis-section">
+            <div class="section-title">实体：</div>
+            <div class="analysis-content">
+                {% for entity_type in result.entity_types %}
+                <div class="entity-item">
+                    <span class="entity-label">{{ entity_type.type }}</span>
+                    {{ entity_type.entities }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="analysis-section">
+            <div class="section-title">主体：</div>
+            <div class="analysis-content">
+                <div class="entity-item">{{ result.subjects }}</div>
+            </div>
+        </div>
+
+        <div class="analysis-section">
+            <div class="section-title">客体：</div>
+            <div class="analysis-content">
+                <div class="entity-item">{{ result.subject_objects }}</div>
+            </div>
+        </div>
+
+        <div class="analysis-section">
+            <div class="section-title">关系：</div>
+            <div class="analysis-content">
+                <div class="entity-item">{{ result.relations }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}  <!-- 添加if判断结束 -->
+
+    <div class="entity-types-reference">
+        <h3 class="section-title">可识别的实体类型：</h3>
+        <div class="entity-types-grid">
+            <div class="entity-category">
+                <div class="category-title">基础实体</div>
+                <div class="entity-tags">
+                    <span class="entity-tag">人物</span>
+                    <span class="entity-tag">机构</span>
+                    <span class="entity-tag">地点</span>
+                    <span class="entity-tag">企业</span>
+                    <span class="entity-tag">学校</span>
+                    <span class="entity-tag">Date</span>
+                    <span class="entity-tag">Number</span>
+                </div>
+            </div>
+            <div class="entity-category">
+                <div class="category-title">文化作品</div>
+                <div class="entity-tags">
+                    <span class="entity-tag">影视作品</span>
+                    <span class="entity-tag">文学作品</span>
+                    <span class="entity-tag">图书作品</span>
+                    <span class="entity-tag">音乐专辑</span>
+                    <span class="entity-tag">歌曲</span>
+                    <span class="entity-tag">电视综艺</span>
+                </div>
+            </div>
+            <div class="entity-category">
+                <div class="category-title">其他</div>
+                <div class="entity-tags">
+                    <span class="entity-tag">国家</span>
+                    <span class="entity-tag">城市</span>
+                    <span class="entity-tag">景点</span>
+                    <span class="entity-tag">语言</span>
+                    <span class="entity-tag">学科专业</span>
+                    <span class="entity-tag">奖项</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <p class="footer-text">The Event Extraction system is developed and maintained by the world's best opinion analysis team.</p>
+    <p class="footer-text">Contact wenxuan: <a href="wenxuan:1019771057@qq.com">1019771057@qq.com</a></p>
+</footer>
+</body>
+</html>

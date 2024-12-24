@@ -12,7 +12,7 @@ class EeArgs:
     dev_path = "./data/{}/{}/duee_dev.json".format(data_dir, data_name)
     test_path = "./data/{}/{}/duee_dev.json".format(data_dir, data_name)
     label_path = "./data/{}/{}/labels.txt".format(data_dir, data_name)
-    with open(label_path, "r") as fp:
+    with open(label_path, encoding="UTF-8") as fp:  # "r"模式是默认的,可以省略
         entity_label = fp.read().strip().split("\n")
     ent_label2id = {}
     ent_id2label = {}

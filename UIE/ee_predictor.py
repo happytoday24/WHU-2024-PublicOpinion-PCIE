@@ -1,13 +1,16 @@
 import sys
+
 sys.path.append("..")
 import json
 import torch
 from flask import Flask, render_template, request
+from flask_cors import CORS
 from transformers import BertTokenizer
 from UIE.ee_main import EePipeline
 from UIE.model import UIEModel
 
 app = Flask(__name__)
+CORS(app)
 
 # 你现有的 CommonArgs, NerArgs, ObjArgs 类保持不变
 class CommonArgs:
@@ -16,6 +19,7 @@ class CommonArgs:
     tokenizer = BertTokenizer.from_pretrained(bert_dir)
     max_seq_len = 256
     data_name = "duee"
+
 
 class NerArgs:
     tasks = ["ner"]
@@ -35,6 +39,7 @@ class NerArgs:
         ent_label2id[label] = i
         ent_id2label[i] = label
 
+
 class ObjArgs:
     tasks = ["obj"]
     device = CommonArgs.device
@@ -47,8 +52,10 @@ class ObjArgs:
     with open(label2role_path, "r", encoding="utf-8") as fp:
         label2role = json.load(fp)
 
+
 ner_args = NerArgs()
 obj_args = ObjArgs()
+
 
 class Predictor:
     def __init__(self, ner_args=None, obj_args=None):
@@ -72,8 +79,10 @@ class Predictor:
                 sbj_obj.append([sbj, obj])
         return sbj_obj
 
+
 # 创建全局预测器实例
 predict_tool = Predictor(ner_args, obj_args)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -81,12 +90,12 @@ def index():
     text = ""
     if request.method == 'POST':
         text = request.form['text']
-        
+
         # 进行预测
         entities = predict_tool.predict_ner(text)
         event_types = []
         result = {"text": text, "events": []}
-        
+
         # 处理实体
         for k, v in entities.items():
             if len(v) != 0:
@@ -97,8 +106,9 @@ def index():
                 sbj_obj = predict_tool.predict_obj(text, subjects)
                 event["details"] = sbj_obj
                 result["events"].append(event)
-    
+
     return render_template('ee_index.html', result=result, text=text)
 
+
 if __name__ == '__main__':
-    app.run(debug=True, port=1232)
+    app.run(debug=True, host='0.0.0.0', port=5003)

@@ -24,7 +24,7 @@ class RePipeline:
         torch.save(self.model.state_dict(), self.args.save_dir)
 
     def load_model(self):
-        self.model.load_state_dict(torch.load(self.args.save_dir, map_location="cpu"))
+        self.model.load_state_dict(torch.load(self.args.save_dir, map_location="cpu"), strict=False)
 
     def build_optimizer_and_scheduler(self, t_total):
         module = (

@@ -179,185 +179,185 @@
     </style>
 </head>
 <body>
-<!-- 顶部头部 -->
-<header>
-    <img src="{{ url_for('static', filename='logo.png') }}" alt="WHU logo">
-    <div>
-        <h1>事件抽取系统</h1>
-        <p class="sub-title">Event Extraction System</p>
+    <!-- 顶部头部 -->
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="WHU logo">
+        <div>
+            <h1>事件抽取系统</h1>
+            <p class="sub-title">Event Extraction System</p>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="container">
+        <form method="POST">
+            <textarea name="text" placeholder="请输入要分析的文本...">{{ text }}</textarea>
+            <button type="submit">分析文本</button>
+        </form>
+
+        <!-- 分析结果显示区域 -->
+        {% if result %}
+        <div class="result">
+            <h2 style="color: #002b5c;">分析结果</h2>
+            <p><strong>输入文本：</strong>{{ result.text }}</p>
+
+            {% for event in result.events %}
+            <div class="event">
+                <h3 class="event-type">事件类型：{{ event.type }}</h3>
+
+                <div class="entity-section">
+                    <h4>实体列表：</h4>
+                    <ul class="entity-list">
+                        {% for entity in event.entities %}
+                        <li class="entity-item">{{ entity[0] }} (位置: {{ entity[1] }})</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                {% if event.details %}
+                <div class="details-section">
+                    <h4>详细信息：</h4>
+                    <ul class="entity-list">
+                        {% for detail in event.details %}
+                        <li class="entity-item">{{ detail[0] }}: {{ detail[1] }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- 事件类型参考始终显示 -->
+        <div class="category-section">
+            <h3>事件类型参考：</h3>
+            <div class="event-category">
+                <div class="category-title">财经/交易</div>
+                <div class="event-types">
+                    <span class="event-type-item">出售/收购</span>
+                    <span class="event-type-item">跌停</span>
+                    <span class="event-type-item">加息</span>
+                    <span class="event-type-item">降价</span>
+                    <span class="event-type-item">降息</span>
+                    <span class="event-type-item">融资</span>
+                    <span class="event-type-item">上市</span>
+                    <span class="event-type-item">涨价</span>
+                    <span class="event-type-item">涨停</span>
+                </div>
+            </div>
+
+            <div class="event-category">
+                <div class="category-title">产品行为</div>
+                <div class="event-types">
+                    <span class="event-type-item">发布</span>
+                    <span class="event-type-item">获奖</span>
+                    <span class="event-type-item">上映</span>
+                    <span class="event-type-item">下架</span>
+                    <span class="event-type-item">召回</span>
+                </div>
+            </div>
+
+            <!-- 其他事件类型类似地列出 -->
+            <div class="event-category">
+                <div class="category-title">交往</div>
+                <div class="event-types">
+                    <span class="event-type-item">道歉</span>
+                    <span class="event-type-item">点赞</span>
+                    <span class="event-type-item">感谢</span>
+                    <span class="event-type-item">会见</span>
+                    <span class="event-type-item">探班</span>
+                </div>
+            </div>
+
+            <div class="event-category">
+                <div class="category-title">竞赛行为</div>
+                <div class="event-types">
+                    <span class="event-type-item">夺冠</span>
+                    <span class="event-type-item">晋级</span>
+                    <span class="event-type-item">禁赛</span>
+                    <span class="event-type-item">胜负</span>
+                    <span class="event-type-item">退赛</span>
+                    <span class="event-type-item">退役</span>
+                </div>
+            </div>
+
+            <div class="event-category">
+                <div class="category-title">人生</div>
+                <div class="event-types">
+                    <span class="event-type-item">产子/女</span>
+                    <span class="event-type-item">出轨</span>
+                    <span class="event-type-item">订婚</span>
+                    <span class="event-type-item">分手</span>
+                    <span class="event-type-item">怀孕</span>
+                    <span class="event-type-item">婚礼</span>
+                    <span class="event-type-item">结婚</span>
+                    <span class="event-type-item">离婚</span>
+                    <span class="event-type-item">庆生</span>
+                    <span class="event-type-item">求婚</span>
+                    <span class="event-type-item">失联</span>
+                    <span class="event-type-item">死亡</span>
+                </div>
+            </div>
+
+            <div class="event-category">
+                <div class="category-title">司法行为</div>
+                <div class="event-types">
+                    <span class="event-type-item">罚款</span>
+                    <span class="event-type-item">拘捕</span>
+                    <span class="event-type-item">举报</span>
+                    <span class="event-type-item">开庭</span>
+                    <span class="event-type-item">立案</span>
+                    <span class="event-type-item">起诉</span>
+                    <span class="event-type-item">入狱</span>
+                    <span class="event-type-item">约谈</span>
+                </div>
+            </div>
+
+            <div class="event-category">
+                <div class="category-title">灾害/意外</div>
+                <div class="event-types">
+                    <span class="event-type-item">爆炸</span>
+                    <span class="event-type-item">车祸</span>
+                    <span class="event-type-item">地震</span>
+                    <span class="event-type-item">洪灾</span>
+                    <span class="event-type-item">起火</span>
+                    <span class="event-type-item">坍/垮塌</span>
+                    <span class="event-type-item">袭击</span>
+                    <span class="event-type-item">坠机</span>
+                </div>
+            </div>
+
+            <div class="event-category">
+                <div class="category-title">组织关系</div>
+                <div class="event-types">
+                    <span class="event-type-item">裁员</span>
+                    <span class="event-type-item">辞/离职</span>
+                    <span class="event-type-item">加盟</span>
+                    <span class="event-type-item">解雇</span>
+                    <span class="event-type-item">解散</span>
+                    <span class="event-type-item">解约</span>
+                    <span class="event-type-item">停职</span>
+                    <span class="event-type-item">退出</span>
+                </div>
+            </div>
+
+            <div class="event-category">
+                <div class="category-title">组织行为</div>
+                <div class="event-types">
+                    <span class="event-type-item">罢工</span>
+                    <span class="event-type-item">闭幕</span>
+                    <span class="event-type-item">开幕</span>
+                    <span class="event-type-item">游行</span>
+                </div>
+            </div>
+        </div>
     </div>
-</header>
 
-<!-- 主体内容 -->
-<div class="container">
-    <form method="POST">
-        <textarea name="text" placeholder="请输入要分析的文本...">{{ text }}</textarea>
-        <button type="submit">分析文本</button>
-    </form>
-
-    <!-- 分析结果显示区域 -->
-    {% if result %}
-    <div class="result">
-        <h2 style="color: #002b5c;">分析结果</h2>
-        <p><strong>输入文本：</strong>{{ result.text }}</p>
-
-        {% for event in result.events %}
-        <div class="event">
-            <h3 class="event-type">事件类型：{{ event.type }}</h3>
-
-            <div class="entity-section">
-                <h4>实体列表：</h4>
-                <ul class="entity-list">
-                    {% for entity in event.entities %}
-                    <li class="entity-item">{{ entity[0] }} (位置: {{ entity[1] }})</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            {% if event.details %}
-            <div class="details-section">
-                <h4>详细信息：</h4>
-                <ul class="entity-list">
-                    {% for detail in event.details %}
-                    <li class="entity-item">{{ detail[0] }}: {{ detail[1] }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- 事件类型参考始终显示 -->
-    <div class="category-section">
-        <h3>事件类型参考：</h3>
-        <div class="event-category">
-            <div class="category-title">财经/交易</div>
-            <div class="event-types">
-                <span class="event-type-item">出售/收购</span>
-                <span class="event-type-item">跌停</span>
-                <span class="event-type-item">加息</span>
-                <span class="event-type-item">降价</span>
-                <span class="event-type-item">降息</span>
-                <span class="event-type-item">融资</span>
-                <span class="event-type-item">上市</span>
-                <span class="event-type-item">涨价</span>
-                <span class="event-type-item">涨停</span>
-            </div>
-        </div>
-
-        <div class="event-category">
-            <div class="category-title">产品行为</div>
-            <div class="event-types">
-                <span class="event-type-item">发布</span>
-                <span class="event-type-item">获奖</span>
-                <span class="event-type-item">上映</span>
-                <span class="event-type-item">下架</span>
-                <span class="event-type-item">召回</span>
-            </div>
-        </div>
-
-        <!-- 其他事件类型类似地列出 -->
-        <div class="event-category">
-            <div class="category-title">交往</div>
-            <div class="event-types">
-                <span class="event-type-item">道歉</span>
-                <span class="event-type-item">点赞</span>
-                <span class="event-type-item">感谢</span>
-                <span class="event-type-item">会见</span>
-                <span class="event-type-item">探班</span>
-            </div>
-        </div>
-
-        <div class="event-category">
-            <div class="category-title">竞赛行为</div>
-            <div class="event-types">
-                <span class="event-type-item">夺冠</span>
-                <span class="event-type-item">晋级</span>
-                <span class="event-type-item">禁赛</span>
-                <span class="event-type-item">胜负</span>
-                <span class="event-type-item">退赛</span>
-                <span class="event-type-item">退役</span>
-            </div>
-        </div>
-
-        <div class="event-category">
-            <div class="category-title">人生</div>
-            <div class="event-types">
-                <span class="event-type-item">产子/女</span>
-                <span class="event-type-item">出轨</span>
-                <span class="event-type-item">订婚</span>
-                <span class="event-type-item">分手</span>
-                <span class="event-type-item">怀孕</span>
-                <span class="event-type-item">婚礼</span>
-                <span class="event-type-item">结婚</span>
-                <span class="event-type-item">离婚</span>
-                <span class="event-type-item">庆生</span>
-                <span class="event-type-item">求婚</span>
-                <span class="event-type-item">失联</span>
-                <span class="event-type-item">死亡</span>
-            </div>
-        </div>
-
-        <div class="event-category">
-            <div class="category-title">司法行为</div>
-            <div class="event-types">
-                <span class="event-type-item">罚款</span>
-                <span class="event-type-item">拘捕</span>
-                <span class="event-type-item">举报</span>
-                <span class="event-type-item">开庭</span>
-                <span class="event-type-item">立案</span>
-                <span class="event-type-item">起诉</span>
-                <span class="event-type-item">入狱</span>
-                <span class="event-type-item">约谈</span>
-            </div>
-        </div>
-
-        <div class="event-category">
-            <div class="category-title">灾害/意外</div>
-            <div class="event-types">
-                <span class="event-type-item">爆炸</span>
-                <span class="event-type-item">车祸</span>
-                <span class="event-type-item">地震</span>
-                <span class="event-type-item">洪灾</span>
-                <span class="event-type-item">起火</span>
-                <span class="event-type-item">坍/垮塌</span>
-                <span class="event-type-item">袭击</span>
-                <span class="event-type-item">坠机</span>
-            </div>
-        </div>
-
-        <div class="event-category">
-            <div class="category-title">组织关系</div>
-            <div class="event-types">
-                <span class="event-type-item">裁员</span>
-                <span class="event-type-item">辞/离职</span>
-                <span class="event-type-item">加盟</span>
-                <span class="event-type-item">解雇</span>
-                <span class="event-type-item">解散</span>
-                <span class="event-type-item">解约</span>
-                <span class="event-type-item">停职</span>
-                <span class="event-type-item">退出</span>
-            </div>
-        </div>
-
-        <div class="event-category">
-            <div class="category-title">组织行为</div>
-            <div class="event-types">
-                <span class="event-type-item">罢工</span>
-                <span class="event-type-item">闭幕</span>
-                <span class="event-type-item">开幕</span>
-                <span class="event-type-item">游行</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 页脚 -->
-<footer class="footer">
-    <p class="footer-text">The Event Extraction system is developed and maintained by the world's best opinion analysis team.</p>
-    <p class="footer-text">Contact wenxuan: <a href="wenxuan:1019771057@qq.com">1019771057@qq.com</a></p>
-</footer>
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p class="footer-text">The Event Extraction system is developed and maintained by the world's best opinion analysis team.</p>
+        <p class="footer-text">Contact wenxuan: <a href="wenxuan:1019771057@qq.com">1019771057@qq.com</a></p>
+    </footer>
 </body>
 </html>

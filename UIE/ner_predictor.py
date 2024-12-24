@@ -5,6 +5,7 @@ from transformers import BertTokenizer
 from UIE.ner_main import NerPipeline
 from UIE.model import UIEModel
 from flask import Flask, render_template, request
+from flask_cors import CORS
 
 class NerArgs:
     tasks = ["ner"]
@@ -38,6 +39,7 @@ class Predictor:
 
 # 创建Flask应用
 app = Flask(__name__)
+CORS(app)
 
 # 初始化预测器
 nerArgs = NerArgs()
@@ -73,15 +75,4 @@ def index():
     return render_template('ner_index.html', text=text, result=result)
 
 if __name__ == '__main__':
-    # 测试代码
-    if len(sys.argv) > 1 and sys.argv[1] == 'test':
-        text = "顾建国先生：研究生学历，正高级工程师，现任本公司董事长、马钢(集团)控股有限公司总经理。"
-        print("文本：", text)
-        entities = predict_tool.predict_ner(text)
-        print("实体：")
-        for k,v in entities.items():
-            if len(v) != 0:
-                print(k, v)
-    else:
-        # 运行Flask应用
-        app.run(debug=True, port=1230)
+    app.run(debug=True, host='0.0.0.0', port=5001)

@@ -41,7 +41,7 @@ PCIE/UIE/                     # 项目主目录
 ├── model_hub/                # 预训练模型目录
 ├── static/                   # Flask存储url目录
 │   ├── logo.png/             # WHU logo
-├── ee_index.html             # HTML 模板文件
+├── templates                 # HTML 模板文件
 │   ├── ee_index.html         # EE 模块的 Web 可视化页面
 │   ├── ner_index.html        # NER 模块的 Web 可视化页面
 │   ├── re_index.html         # RE 模块的 Web 可视化页面
